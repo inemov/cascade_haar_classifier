@@ -26,8 +26,10 @@ Click Save button. As a result, the current frame will be saved as \*.bmp file i
 ## Step 2 - Create vector of positive samples
 
 Open 00_samples_creation.bat in training folder. Its content is like:
-```createsamples.exe -info samples/positive/info.txt -vec vector/objectvector.vec -num 114 -w 20 -h 20
-pause```
+
+```createsamples.exe -info samples/positive/info.txt -vec vector/objectvector.vec -num 114 -w 20 -h 20```
+```pause```
+
 The parameters are:
 - -info relative path to info.txt inside positive samples folder
 - -vec relative path to output vector file
@@ -43,8 +45,9 @@ Also objectvector.vec file will be created in vector folder.
 ## Step 3 - Haar training
 
 Open 01_haar_training.bat in training folder. Its content is like:
-```haartraining.exe -data cascades -vec vector/objectvector.vec -bg samples/negative/info.txt -npos 114 -nneg 78 -nstages 15 -mem 1024 -mode ALL -w 20 -h 20
-pause```
+
+```haartraining.exe -data cascades -vec vector/objectvector.vec -bg samples/negative/info.txt -npos 114 -nneg 78 -nstages 15 -mem 1024 -mode ALL -w 20 -h 20```
+```pause```
 
 -data       cascades path for storing the cascade of classifiers
 -vec        path which points the location of vector file
@@ -58,5 +61,29 @@ pause```
 -h          height of object in pixels - must be the same as in 00_samples_creation.bat
 -nonsym     use this parameter without argument if the object is not horizontally symmetrical
 
+harrtraining.exe collects a new set of negative samples for each stage, and –nneg sets the limit for the size of the set. It uses the previous stages’ information to determine which of the "candidate samples" are misclassified. Training ends when the ratio of misclassified samples to candidate samples is lower than a certain value. Regardless of the number of stages (nstages) that is defined in haartraining.bat, the program may terminate early if we reach above condition. Although this is normally a good sign of accuracy in  training process, however this also may happen when the number of positive images is not enough (e.g. less than 500).
+
 Close the 01_haar_training.bat and run it. To run haartraining.exe following files are needed as well cv097.dll, cxcore097.dll, highgui097.dll, and libguide40.dll.
 CMD should show a similar result:
+![image](https://user-images.githubusercontent.com/24581566/150627444-947fa3a9-5284-42f8-b59c-7abb058bd792.png)
+
+Data provided is related to the 14th stage of training
+Parent node: Defines the current stage under training process
+N: Number of used features in this stage
+%SMP: Sample Percentage (Percentage of sample used for this feature)
+F: “+” if flipped (when symmetry applied) and “–“ if not
+ST.THR: Stage Threshold
+HR: Hit Rate based on the stage threshold
+FA: False Alarm based on the stage threshold
+EXP. ERR: Exponential Error of strong classifier
+
+- the number of features used in higher nodes are more than the earlier nodes
+- the overall false detection (false alarm) decreases with stages
+- the computational time for training increases with stage
+
+## Step 4 - Creating haar cascade XML file
+
+Copy 0 - N folders from training/cascades directory to cascade2xml/data directory.
+
+Open 
+haarconv.exe data clay_target.xml 20 20
