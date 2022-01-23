@@ -1,50 +1,44 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Aug 14 18:01:28 2020
+Created on Fri Aug 14 17:57:14 2020
 
 @author: Ivan Nemov
 """
 
-import cv2
+import sys
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets
+import cv2
 
-class OpencvHaarSamplesWindow(QtWidgets.QMainWindow):
 
-    def __init__(self, _quit_signal_message, parent=None):
-        
-        self._quit_signal_message = _quit_signal_message
-        
-        super(OpencvHaarSamplesWindow, self).__init__(parent)
-        self.form_widget = FormWidget(self, self._quit_signal_message)
+class MainWindow(QtWidgets.QMainWindow):
+
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+        self.form_widget = FormWidget(self)
         _widget = QtWidgets.QWidget()
         _layout = QtWidgets.QVBoxLayout(_widget)
         _layout.addWidget(self.form_widget)
         self.setCentralWidget(_widget)
         self.resize(1000, 515)
         self.setWindowTitle("Create image samples from video")
-        self.setWindowIcon(QtGui.QIcon(QtCore.QDir.currentPath()+'/OpenCV_logo.png'))
-        self.quit = QtWidgets.QAction("Quit", self)
-        self.quit.triggered.connect(self.closeEvent)
+        self.setWindowIcon(QtGui.QIcon(QtCore.QDir.currentPath()+'/res/img/OpenCV_logo.png'))
         
-    def closeEvent(self, event):
-        self.form_widget.exit_action_custom()
-        event.ignore()
+ 
         
 class FormWidget(QtWidgets.QWidget):
     
-    def __init__(self, parent, _quit_signal_message):
+    def __init__(self, parent):
         super(FormWidget, self).__init__(parent)
         self.__controls()
         self.__layout()
-        self._quit_signal_message = _quit_signal_message
 
     def __controls(self):
         self.menu_bar=QtWidgets.QMenuBar()
         self.menu_bar.setFixedHeight(20)
         file_menu=self.menu_bar.addMenu("File")
         exit_action=QtWidgets.QAction('Exit',self)
-        exit_action.triggered.connect(self.exit_action_custom)
+        exit_action.triggered.connect(QtWidgets.QApplication.quit)
         file_menu.addAction(exit_action)
         
         self.FrameBox = QtWidgets.QGroupBox(self)
@@ -56,7 +50,7 @@ class FormWidget(QtWidgets.QWidget):
         self.FrameView.setObjectName("FrameView")
         self.x_dim = 975
         self.y_dim = 470
-        self.FrameViewPixmap = QtGui.QPixmap(QtCore.QDir.currentPath()+'/default_preview.png')
+        self.FrameViewPixmap = QtGui.QPixmap(QtCore.QDir.currentPath()+'/res/img/default_preview.png')
         self.FrameView.setPixmap(self.FrameViewPixmap.scaled(self.x_dim, self.y_dim))
         
         self.ControlsBox = QtWidgets.QGroupBox(self)
@@ -90,7 +84,7 @@ class FormWidget(QtWidgets.QWidget):
         
         self.Positive_Folder = QtWidgets.QLineEdit(self.ControlsBox)
         self.Positive_Folder.setFixedHeight(25)
-        directory = str(QtCore.QDir.currentPath() + "/positive/rawdata")
+        directory = str(QtCore.QDir.currentPath() + "/training/samples/positive")
         self.Positive_Folder.setText(directory)
         
         self.Positive_Folder_CommandButton = QtWidgets.QPushButton(self.ControlsBox)
@@ -109,7 +103,7 @@ class FormWidget(QtWidgets.QWidget):
         
         self.Negative_Folder = QtWidgets.QLineEdit(self.ControlsBox)
         self.Negative_Folder.setFixedHeight(25)
-        directory = str(QtCore.QDir.currentPath() + "/negative/rawdata")
+        directory = str(QtCore.QDir.currentPath() + "/training/samples/negative")
         self.Negative_Folder.setText(directory)
         
         self.Negative_Folder_CommandButton = QtWidgets.QPushButton(self.ControlsBox)
@@ -281,9 +275,11 @@ class FormWidget(QtWidgets.QWidget):
         source_file_name = source_file_path_delim[-1]
         source_file_name_ext = str("/" + str(source_file_name[:-4]) + "_" + str(self.count) + ".bmp")
         if self.ROI_array == []:
-            image_file = str(self.Negative_Folder.text() + source_file_name_ext)
+            image_file = str(self.Negative_Folder.text() + "/rawdata" + source_file_name_ext)
+            with open(self.Negative_Folder.text()+"/info.txt", "a") as info_file:
+                info_file.write("\\rawdata\\" + str(source_file_name[:-4]) + "_" + str(self.count) + ".bmp" + "\n")
         else:
-            image_file = str(self.Positive_Folder.text() + source_file_name_ext)
+            image_file = str(self.Positive_Folder.text() + "/rawdata" + source_file_name_ext)
             with open(self.Positive_Folder.text()+"/info.txt", "a") as info_file:
                 newstring = str("\\rawdata\\" + str(source_file_name[:-4]) + "_" + str(self.count) + ".bmp" + " " + str(len(self.ROI_array)))
                 for targetObjectBox in self.ROI_array:
@@ -423,19 +419,11 @@ class FormWidget(QtWidgets.QWidget):
         except:
             return None
         
-    def exit_action_custom(self):
-        try:
-            self.video.release()
-            self.video = None
-            self._quit_signal_message.quit_signal_message_bit.emit(True)
-        except:
-            self.video = None
-            self._quit_signal_message.quit_signal_message_bit.emit(True)
-
-class quit_signal_message(QtCore.QObject):
-    quit_signal_message_bit = QtCore.pyqtSignal(bool)
-        
-def call(_quit_signal_message):
-    OpencvHaarSamples_window = OpencvHaarSamplesWindow(_quit_signal_message)
-    OpencvHaarSamples_window.show()
-    return OpencvHaarSamples_window
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    win = MainWindow()
+    win.show()
+    app.exec_()
+    
+if __name__ == '__main__':
+    sys.exit(main())
