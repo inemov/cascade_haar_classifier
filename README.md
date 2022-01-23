@@ -85,5 +85,17 @@ EXP. ERR: Exponential Error of strong classifier
 
 Copy 0 - N folders from training/cascades directory to cascade2xml/data directory.
 
-Open 
+Open 00_convert_cascade_to_xml.bat file in cascade2xml folder. Its content is like:
 haarconv.exe data clay_target.xml 20 20
+data - relative path to folder with cascades.
+clay_target.xml - final haar cascade xml file output
+20 20 - width and height of object in pixels same as in haartraining.exe
+
+Close the 00_convert_cascade_to_xml.bat and run it. To run haarconv.exe following files are needed as well cv097.dll, cxcore097.dll.
+CMD will close after xml file is created.
+The xml file can be further used in cv2:
+
+```#initialize Haar classifier```
+```detector = cv2.CascadeClassifier('clay_target.xml')```
+```#detect object with haar cascade (select max weight)```
+```rectangles_w_h, levels, weights = detector.detectMultiScale3(image, scaleFactor=1.075, minNeighbors=5, minSize=(15, 15), maxSize=(50,50), outputRejectLevels=True)```
