@@ -48,6 +48,7 @@ Also objectvector.vec file will be created in vector folder.
 Open 01_haar_training.bat in training folder. Its content is like:
 
 ```haartraining.exe -data cascades -vec vector/objectvector.vec -bg samples/negative/info.txt -npos 114 -nneg 78 -nstages 15 -mem 1024 -mode ALL -w 20 -h 20```
+``````
 ```pause```
 
 -data       cascades path for storing the cascade of classifiers
@@ -96,11 +97,11 @@ Close the 00_convert_cascade_to_xml.bat and run it. To run haarconv.exe followin
 CMD will close after xml file is created.
 The xml file can be further used in cv2:
 
-```#initialize Haar classifier
-```
-```detector = cv2.CascadeClassifier('clay_target.xml')
-```
-```#detect object with haar cascade (select max weight)
-```
-```rectangles_w_h, levels, weights = detector.detectMultiScale3(image, scaleFactor=1.075, minNeighbors=5, minSize=(15, 15), maxSize=(50,50), outputRejectLevels=True)
-```
+```#initialize Haar classifier```
+``````
+```detector = cv2.CascadeClassifier('clay_target.xml')```
+``````
+```#detect object with haar cascade (select max weight)```
+``````
+```rectangles_w_h, levels, weights = detector.detectMultiScale3(image, scaleFactor=1.075, minNeighbors=5, minSize=(15, 15), maxSize=(50,50), outputRejectLevels=True)```
+``````
