@@ -1,5 +1,12 @@
 # cascade_haar_classifier
  Training cascade Haar classified step-by-step on user data
+ 
+## Acknowledgement
+Most of the haar classifier building process steps are taken directly from <b>Mahdi Rezaei</b> work "Creating a Cascade of Haar-Like Classifiers: Step by Step".
+Steps 2, 3 and 4 described in this repository repeat steps 4, 5 and 6 in the original work.
+https://www.cs.auckland.ac.nz/~m.rezaei/Tutorials/Creating_a_Cascade_of_Haar-Like_Classifiers_Step_by_Step.pdf
+
+Step 1, 2 and 3 from original work were combined into step 1 of this repository and Python based Qt5 GUI app was developed to take sample images from video files.
 
 ## Step 1 - Create negative and positive samples
 
