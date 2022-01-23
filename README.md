@@ -27,7 +27,8 @@ Click Save button. As a result, the current frame will be saved as \*.bmp file i
 
 Open 00_samples_creation.bat in training folder. Its content is like:
 
-```createsamples.exe -info samples/positive/info.txt -vec vector/objectvector.vec -num 114 -w 20 -h 20```
+```createsamples.exe -info samples/positive/info.txt -vec vector/objectvector.vec -num 114 -w 20 -h 20
+```
 ```pause```
 
 The parameters are:
@@ -95,7 +96,11 @@ Close the 00_convert_cascade_to_xml.bat and run it. To run haarconv.exe followin
 CMD will close after xml file is created.
 The xml file can be further used in cv2:
 
-```#initialize Haar classifier```
-```detector = cv2.CascadeClassifier('clay_target.xml')```
-```#detect object with haar cascade (select max weight)```
-```rectangles_w_h, levels, weights = detector.detectMultiScale3(image, scaleFactor=1.075, minNeighbors=5, minSize=(15, 15), maxSize=(50,50), outputRejectLevels=True)```
+```#initialize Haar classifier
+```
+```detector = cv2.CascadeClassifier('clay_target.xml')
+```
+```#detect object with haar cascade (select max weight)
+```
+```rectangles_w_h, levels, weights = detector.detectMultiScale3(image, scaleFactor=1.075, minNeighbors=5, minSize=(15, 15), maxSize=(50,50), outputRejectLevels=True)
+```
