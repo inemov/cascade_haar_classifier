@@ -111,3 +111,8 @@ The xml file can be further used in cv2:
 ```#detect object with haar cascade (select max weight)```
 
 ```rectangles_w_h, levels, weights = detector.detectMultiScale3(image, scaleFactor=1.075, minNeighbors=5, minSize=(15, 15), maxSize=(50,50), outputRejectLevels=True)```
+
+## Requirements
+Run ```pip install -r \__misc\requirements_ide.txt``` within virtual environment to install: 
+spyder==5.1.5
+opencv-python==4.5.5.62
